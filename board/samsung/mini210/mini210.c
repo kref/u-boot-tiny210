@@ -164,15 +164,23 @@ int board_init(void)
 
 int dram_init(void)
 {
-	gd->bd->bi_dram[0].start = PHYS_SDRAM_1;
-	gd->bd->bi_dram[0].size = PHYS_SDRAM_1_SIZE;
-
-#if defined(PHYS_SDRAM_2)
-	gd->bd->bi_dram[1].start = PHYS_SDRAM_2;
-	gd->bd->bi_dram[1].size = PHYS_SDRAM_2_SIZE;
-#endif
+	/* Since we have discontinuous RAM configuration, just put
+	 * bank1 here for relocation
+	 */
+        gd->ram_size    = get_ram_size((long *)PHYS_SDRAM_1, PHYS_SDRAM_1_SIZE);
 
 	return 0;
+}
+
+void dram_init_banksize(void)
+{
+        gd->bd->bi_dram[0].start = PHYS_SDRAM_1;
+        gd->bd->bi_dram[0].size = get_ram_size((long *)PHYS_SDRAM_1, \
+                                                       PHYS_SDRAM_1_SIZE);
+
+        gd->bd->bi_dram[1].start = PHYS_SDRAM_2;
+        gd->bd->bi_dram[1].size = get_ram_size((long *)PHYS_SDRAM_2, \
+                                                        PHYS_SDRAM_2_SIZE);
 }
 
 #ifdef BOARD_LATE_INIT
