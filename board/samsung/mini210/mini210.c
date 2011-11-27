@@ -30,7 +30,8 @@
 #include <common.h>
 #include <s5pc110.h>
 #include <asm/io.h>
-
+#include <asm/arch/gpio.h>
+#include <asm/arch/mmc.h>
 
 /* ------------------------------------------------------------------------- */
 #define SMC9115_Tacs	(0x0)	// 0clk		address set-up
@@ -56,6 +57,8 @@
 #define DM9000_PMC	(0x0)	// normal(1data)page mode configuration
 
 DECLARE_GLOBAL_DATA_PTR;
+
+static struct s5pc110_gpio *s5pc110_gpio;
 
 static inline void delay(unsigned long loops)
 {
@@ -149,6 +152,9 @@ static void pwm_pre_init(void)
 
 int board_init(void)
 {
+	/* Set Initial global variables */
+	s5pc110_gpio = (struct s5pc110_gpio *)S5PC110_GPIO_BASE;
+
 	smc9115_pre_init();
         pwm_pre_init();
 
@@ -276,5 +282,45 @@ void nand_init(void)
         if (nand_dev_desc[0].ChipID != NAND_ChipID_UNKNOWN) {
                 print_size(nand_dev_desc[0].totlen, "\n");
         }
+}
+#endif
+
+#ifdef CONFIG_GENERIC_MMC
+int board_mmc_init(bd_t *bis)
+{
+	int i;
+
+	/*
+	 * MMC0 GPIO
+	 * GPG0[0]      SD_0_CLK
+	 * GPG0[1]      SD_0_CMD
+	 * GPG0[2]      SD_0_CDn        -> Not used
+	 * GPG0[3:6]    SD_0_DATA[0:3]
+	 *
+	 * MMC1 GPIO
+	 * GPG1[0]      SD_1_CLK
+	 * GPG1[1]      SD_1_CMD
+	 * GPG1[2]      SD_1_CDn        -> Not used
+	 * GPG1[3:6]    SD_1_DATA[0:3]
+	 */
+	for (i = 0; i < 7; i++) {
+		if (i == 2)
+			continue;
+		/* GPG0[0:6] special function 2 */
+		s5p_gpio_cfg_pin(&s5pc110_gpio->g0, i, 0x2);
+		/* GPG0[0:6] pull disable */
+		s5p_gpio_set_pull(&s5pc110_gpio->g0, i, GPIO_PULL_NONE);
+		/* GPG0[0:6] drv 4x */
+		s5p_gpio_set_drv(&s5pc110_gpio->g0, i, GPIO_DRV_4X);
+
+		/* GPG1[0:6] special function 2 */
+		s5p_gpio_cfg_pin(&s5pc110_gpio->g1, i, 0x2);
+		/* GPG1[0:6] pull disable */
+		s5p_gpio_set_pull(&s5pc110_gpio->g1, i, GPIO_PULL_NONE);
+		/* GPG1[0:6] drv 4x */
+		s5p_gpio_set_drv(&s5pc110_gpio->g1, i, GPIO_DRV_4X);
+	}
+
+	return (s5p_mmc_init(0, 4) || s5p_mmc_init(1, 4));
 }
 #endif
