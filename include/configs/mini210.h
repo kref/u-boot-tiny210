@@ -383,4 +383,7 @@
 #define UART_UDIVSLOT_VAL	0xDDDD
 #endif
 
+/* MMC SPL */
+#define CONFIG_SPL
+
 #endif	/* __CONFIG_H */

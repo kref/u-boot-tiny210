@@ -25,14 +25,34 @@ include $(TOPDIR)/config.mk
 
 LIB	= $(obj)lib$(BOARD).o
 
+ifndef CONFIG_SPL_BUILD
 COBJS	:= mini210.o
+endif
+
+ifdef CONFIG_SPL_BUILD
+COBJS  += mmc_boot.o
+endif
+
 SOBJS	:= lowlevel_init.o mem_setup.o
 
 SRCS    := $(SOBJS:.o=.S) $(COBJS:.o=.c)
 OBJS    := $(addprefix $(obj),$(COBJS) $(SOBJS))
 
+ALL    +=$(obj).depend $(LIB)
+
+ifdef CONFIG_SPL_BUILD
+ALL    += tools/mk$(BOARD)spl.exe
+endif
+
+all:   $(ALL)
+
 $(LIB):	$(OBJS)
 	$(AR) $(ARFLAGS) $@ $(OBJS)
+
+ifdef CONFIG_SPL_BUILD
+tools/mk$(BOARD)spl.exe:       tools/mkv210_image.c
+	$(HOSTCC) tools/mkv210_image.c -o tools/mk$(BOARD)spl.exe
+endif
 
 #########################################################################
 

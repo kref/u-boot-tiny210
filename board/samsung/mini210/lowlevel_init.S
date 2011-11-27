@@ -107,7 +107,7 @@ lowlevel_init:
 	 * and actually, memory controller must be configured before U-Boot
 	 * is running in ram.
 	 */
-	ldr	r0, =0xff000fff
+	ldr	r0, =0x00ffffff
 	bic	r1, pc, r0		/* r0 <- current base addr of code */
 	ldr	r2, _TEXT_BASE		/* r1 <- original base addr in ram */
 	bic	r2, r2, r0		/* r0 <- current base addr of code */
