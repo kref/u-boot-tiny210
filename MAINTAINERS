@@ -771,6 +771,10 @@ Sergey Lapin <slapin@ossfans.org>
 
 	afeb9260	ARM926EJS (AT91SAM9260 SoC)
 
+Alex Ling <kasimling@gmail.com>
+
+	mini210		ARM ARMv7 (S5PC110 SoC)
+
 Valentin Longchamp <valentin.longchamp@keymile.com>
 
 	km_kirkwood	ARM926EJS (Kirkwood SoC)
