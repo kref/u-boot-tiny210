@@ -32,6 +32,7 @@
 #include <asm/io.h>
 #include <asm/arch/gpio.h>
 #include <asm/arch/mmc.h>
+#include <netdev.h>
 
 /* ------------------------------------------------------------------------- */
 #define SMC9115_Tacs	(0x0)	// 0clk		address set-up
@@ -68,64 +69,20 @@ static inline void delay(unsigned long loops)
 /*
  * Miscellaneous platform dependent initialisations
  */
-static void smc9115_pre_init(void)
-{
-        unsigned int tmp;
-        unsigned char smc_bank_num=4;
-
-        /* gpio configuration */
-
-        tmp = MP01CON_REG;
-        tmp &= ~(0xf << smc_bank_num*4);
-        tmp |= (0x2 << smc_bank_num*4);
-        MP01CON_REG = tmp;
-
-	tmp = SROM_BW_REG;
-
-	tmp &= ~(0xF<<(smc_bank_num * 4));
-        tmp |= SROM_DATA16_WIDTH(smc_bank_num);
-        tmp |= SROM_ADDR_MODE_16BIT(smc_bank_num);
-//      tmp |= SROM_WAIT_ENABLE(smc_bank_num);
-
-        SROM_BW_REG = tmp;
-        if(smc_bank_num == 0)
-		SROM_BC0_REG = ((SMC9115_Tacs<<28)|(SMC9115_Tcos<<24)|(SMC9115_Tacc<<16)|
-				(SMC9115_Tcoh<<12)|(SMC9115_Tah<<8)|(SMC9115_Tacp<<4)|(SMC9115_PMC));
-        else if(smc_bank_num == 1)
-                SROM_BC1_REG = ((SMC9115_Tacs<<28)|(SMC9115_Tcos<<24)|(SMC9115_Tacc<<16)|
-				(SMC9115_Tcoh<<12)|(SMC9115_Tah<<8)|(SMC9115_Tacp<<4)|(SMC9115_PMC));
-        else if(smc_bank_num == 2)
-                SROM_BC2_REG = ((SMC9115_Tacs<<28)|(SMC9115_Tcos<<24)|(SMC9115_Tacc<<16)|
-				(SMC9115_Tcoh<<12)|(SMC9115_Tah<<8)|(SMC9115_Tacp<<4)|(SMC9115_PMC));
-        else if(smc_bank_num == 3)
-                SROM_BC3_REG = ((SMC9115_Tacs<<28)|(SMC9115_Tcos<<24)|(SMC9115_Tacc<<16)|
-				(SMC9115_Tcoh<<12)|(SMC9115_Tah<<8)|(SMC9115_Tacp<<4)|(SMC9115_PMC));
-        else if(smc_bank_num == 4)
-                SROM_BC4_REG = ((SMC9115_Tacs<<28)|(SMC9115_Tcos<<24)|(SMC9115_Tacc<<16)|
-				(SMC9115_Tcoh<<12)|(SMC9115_Tah<<8)|(SMC9115_Tacp<<4)|(SMC9115_PMC));
-        else if(smc_bank_num == 5)
-                SROM_BC5_REG = ((SMC9115_Tacs<<28)|(SMC9115_Tcos<<24)|(SMC9115_Tacc<<16)|
-				(SMC9115_Tcoh<<12)|(SMC9115_Tah<<8)|(SMC9115_Tacp<<4)|(SMC9115_PMC));
-
-}
-
 static void dm9000_pre_init(void)
 {
 	unsigned int tmp;
 
-#if defined(DM9000_16BIT_DATA)
-	SROM_BW_REG &= ~(0xf << 20);
-	SROM_BW_REG |= (0<<23) | (0<<22) | (0<<21) | (1<<20);
+        /* DM9000 on SROM BANK1, 16 bit */
+	SROM_BW_REG &= ~(0xf << 4);
+	SROM_BW_REG |= (0x1 << 4);
 
-#else
-	SROM_BW_REG &= ~(0xf << 20);
-	SROM_BW_REG |= (0<<19) | (0<<18) | (0<<16);
-#endif
-	SROM_BC5_REG = ((0<<28)|(1<<24)|(5<<16)|(1<<12)|(4<<8)|(6<<4)|(0<<0));
+	SROM_BC1_REG = ((0<<28)|(0<<24)|(5<<16)|(0<<12)|(0<<8)|(0<<4)|(0<<0));
 
+	/* Set MP01_1 as SROM_CSn[1] */
 	tmp = MP01CON_REG;
-	tmp &=~(0xf<<20);
-	tmp |=(2<<20);
+	tmp &=~(0xf<<4);
+	tmp |=(2<<4);
 	MP01CON_REG = tmp;
 }
 
@@ -155,7 +112,6 @@ int board_init(void)
 	/* Set Initial global variables */
 	s5pc110_gpio = (struct s5pc110_gpio *)S5PC110_GPIO_BASE;
 
-	smc9115_pre_init();
         pwm_pre_init();
 
 #ifdef CONFIG_DRIVER_DM9000
@@ -234,6 +190,11 @@ int board_late_init (void)
 }
 #endif
 #endif
+
+int board_eth_init(bd_t *bis)
+{
+	return dm9000_initialize(bis);
+}
 
 #ifdef CONFIG_DISPLAY_BOARDINFO
 int checkboard(void)
