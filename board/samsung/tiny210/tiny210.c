@@ -32,6 +32,9 @@
 #include <asm/io.h>
 #include <asm/arch/gpio.h>
 #include <asm/arch/mmc.h>
+/*Add by lk for DM9000 driver */
+//#include <drivers/net/dm9000x.h>
+#include <netdev.h>
 
 /* ------------------------------------------------------------------------- */
 #define SMC9115_Tacs	(0x0)	// 0clk		address set-up
@@ -111,21 +114,21 @@ static void smc9115_pre_init(void)
 
 static void dm9000_pre_init(void)
 {
-	unsigned int tmp;
-
+unsigned int tmp;
+/******** Modified by lk ************/
 #if defined(DM9000_16BIT_DATA)
-	SROM_BW_REG &= ~(0xf << 20);
-	SROM_BW_REG |= (0<<23) | (0<<22) | (0<<21) | (1<<20);
-
+	//SROM_BW_REG &= ~(0xf << 20);
+	//SROM_BW_REG |= (0<<23) | (0<<22) | (0<<21) | (1<<20);
+			SROM_BW_REG &= ~(0xf << 4);
+				SROM_BW_REG |= (0x1 << 4);
 #else
 	SROM_BW_REG &= ~(0xf << 20);
 	SROM_BW_REG |= (0<<19) | (0<<18) | (0<<16);
 #endif
-	SROM_BC5_REG = ((0<<28)|(1<<24)|(5<<16)|(1<<12)|(4<<8)|(6<<4)|(0<<0));
+	SROM_BC1_REG = ((0<<28)|(0<<24)|(5<<16)|(0<<12)|(0<<8)|(0<<4)|(0<<0));
 
 	tmp = MP01CON_REG;
-	tmp &=~(0xf<<20);
-	tmp |=(2<<20);
+	tmp &=~(0xf<<4);								tmp |=(2<<4);
 	MP01CON_REG = tmp;
 }
 
@@ -155,7 +158,9 @@ int board_init(void)
 	/* Set Initial global variables */
 	s5pc110_gpio = (struct s5pc110_gpio *)S5PC110_GPIO_BASE;
 
-	smc9115_pre_init();
+	/***Modified by lk ***/
+
+	//smc9115_pre_init();
         pwm_pre_init();
 
 #ifdef CONFIG_DRIVER_DM9000
@@ -234,6 +239,17 @@ int board_late_init (void)
 }
 #endif
 #endif
+/* Modified by lk for dm9000*/
+int board_eth_init(bd_t *bis)
+{
+	int rc = 0;
+#ifdef CONFIG_DRIVER_DM9000
+	rc = dm9000_initialize(bis);
+#endif
+	return rc;
+}
+/***************************/
+
 
 #ifdef CONFIG_DISPLAY_BOARDINFO
 int checkboard(void)
