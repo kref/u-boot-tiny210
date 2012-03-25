@@ -32,6 +32,8 @@
 #include <asm/io.h>
 #include <asm/arch/gpio.h>
 #include <asm/arch/mmc.h>
+#include <asm/arch/clk.h>
+#include <asm/arch/clock.h>
 #include <netdev.h>
 
 /* ------------------------------------------------------------------------- */
@@ -247,9 +249,14 @@ void nand_init(void)
 #endif
 
 #ifdef CONFIG_GENERIC_MMC
+#define MOUTMMC (50000000) /* 50MHz */
+
 int board_mmc_init(bd_t *bis)
 {
 	int i;
+	struct s5pc110_clock *clk =
+		(struct s5pc110_clock *)samsung_get_base_clock();
+	unsigned long clk_src, clk_div, mpll, div;
 
 	/*
 	 * MMC0 GPIO
@@ -281,6 +288,20 @@ int board_mmc_init(bd_t *bis)
 		/* GPG1[0:6] drv 4x */
 		s5p_gpio_set_drv(&s5pc110_gpio->g1, i, GPIO_DRV_4X);
 	}
+
+	clk_src = readl(&clk->res9[0]); /* CLK_SRC4 */
+	clk_src &= ~((0xf << 4) | 0xf);
+	clk_src |= (0x6 << 4) | 0x6; /* Set MMC0/1_SEL to SCLK_MPLL */
+
+        mpll = get_pll_clk(MPLL);
+	div = ((mpll + MOUTMMC) / MOUTMMC) - 1;
+
+	clk_div = readl(&clk->div4);
+	clk_div &= ~((0xf << 4) | 0xf);
+	clk_div |= (div << 4) | div;
+
+	writel(clk_src, &clk->res9[0]);
+	writel(clk_div, &clk->div4);
 
 	return (s5p_mmc_init(0, 4) || s5p_mmc_init(1, 4));
 }
