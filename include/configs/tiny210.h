@@ -421,4 +421,21 @@
 #define CONFIG_SERVERIP		192.168.186.13
 #define CONFIG_GATEWAYIP	192.168.0.1
 
+/*   For nand driver   */
+#define CONFIG_CMD_NAND
+#if defined(CONFIG_CMD_NAND)
+#define CONFIG_CMD_NAND_YAFFS
+#define CONFIG_CMD_MTDPARTS
+#define CONFIG_SYS_MAX_NAND_DEVICE 1
+#define CONFIG_SYS_NAND_BASE           (0xB0E000000)
+#define NAND_MAX_CHIPS          1
+#define CONFIG_MTD_DEVICE  /* needed for mtdparts commands add by lkmcu */
+#define NAND_DISABLE_CE()       (NFCONT_REG |= (1 << 1))
+#define NAND_ENABLE_CE()        (NFCONT_REG &= ~(1 << 1))
+#define NF_TRANSRnB()           do { while(!(NFSTAT_REG & (1 << 0))); } while(0)
+#define CONFIG_CMD_NAND_YAFFS_SKIPFB
+#define CONFIG_NAND_USE_CHIP_NAME 1
+#undef  CFG_NAND_FLASH_BBT
+#endif
+
 #endif	/* __CONFIG_H */
