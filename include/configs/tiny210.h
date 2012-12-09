@@ -425,6 +425,7 @@
 /*   For nand driver   */
 #define CONFIG_CMD_NAND
 #if defined(CONFIG_CMD_NAND)
+#define CONFIG_NAND_S5PC1XX 1
 #define CONFIG_CMD_NAND_YAFFS
 #define CONFIG_CMD_MTDPARTS
 #define CONFIG_SYS_MAX_NAND_DEVICE 1
