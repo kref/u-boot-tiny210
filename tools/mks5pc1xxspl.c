@@ -82,6 +82,9 @@ int main (int argc, char *argv[])
 	a = Buf + 8;
 	*( (unsigned int *)a ) = checksum;
 
+	a = Buf + 0;
+	*( (unsigned int *)a ) = IMG_SIZE;
+
 //////////////////////////////////////////////////////////////
 	fp = fopen(argv[2], "wb");
 	if (fp == NULL)
