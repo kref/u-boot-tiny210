@@ -104,6 +104,7 @@
 /* SD/MMC configuration */
 #define CONFIG_GENERIC_MMC		1
 #define CONFIG_MMC			1
+#define CONFIG_SDHCI
 #define CONFIG_S5P_SDHCI		1
 
 /* PWM */
