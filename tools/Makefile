@@ -69,6 +69,8 @@ BIN_FILES-$(CONFIG_XWAY_SWAP_BYTES) += xway-swap-bytes$(SFX)
 BIN_FILES-y += mkenvimage$(SFX)
 BIN_FILES-y += mkimage$(SFX)
 BIN_FILES-$(CONFIG_SMDK5250) += mksmdk5250spl$(SFX)
+BIN_FILES-$(CONFIG_MINI210) += mkmini210spl$(SFX)
+BIN_FILES-$(CONFIG_TINY210) += mktiny210spl$(SFX)
 BIN_FILES-$(CONFIG_MX23) += mxsboot$(SFX)
 BIN_FILES-$(CONFIG_MX28) += mxsboot$(SFX)
 BIN_FILES-$(CONFIG_NETCONSOLE) += ncb$(SFX)
@@ -105,6 +107,7 @@ NOPED_OBJ_FILES-y += mkenvimage.o
 NOPED_OBJ_FILES-y += mkimage.o
 OBJ_FILES-$(CONFIG_SMDK5250) += mkexynosspl.o
 OBJ_FILES-$(CONFIG_MX23) += mxsboot.o
+OBJ_FILES-$(CONFIG_S5PC110) += mks5pc1xxspl.o
 OBJ_FILES-$(CONFIG_MX28) += mxsboot.o
 OBJ_FILES-$(CONFIG_NETCONSOLE) += ncb.o
 NOPED_OBJ_FILES-y += os_support.o
@@ -238,7 +241,7 @@ $(obj)mkimage$(SFX):	$(obj)aisimage.o \
 	$(HOSTCC) $(HOSTCFLAGS) $(HOSTLDFLAGS) -o $@ $^ $(HOSTLIBS)
 	$(HOSTSTRIP) $@
 
-$(obj)mk$(BOARD)spl$(SFX):	$(obj)mkexynosspl.o
+$(obj)mk$(BOARD)spl$(SFX):	$(obj)mk$(SOC)spl.o
 	$(HOSTCC) $(HOSTCFLAGS) $(HOSTLDFLAGS) -o $@ $^
 	$(HOSTSTRIP) $@
 
