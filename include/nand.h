@@ -32,7 +32,7 @@
  * converted, this will go away.
  */
 #if defined(CONFIG_NAND_FSL_ELBC) || defined(CONFIG_NAND_ATMEL)\
-	|| defined(CONFIG_NAND_FSL_IFC)
+	|| defined(CONFIG_NAND_FSL_IFC) || defined(CONFIG_NAND_S5P)
 #define CONFIG_SYS_NAND_SELF_INIT
 #endif
 
