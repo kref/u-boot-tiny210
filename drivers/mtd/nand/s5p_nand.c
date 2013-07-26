@@ -1418,6 +1418,22 @@ int compatible_with_secondary_ecc(struct mtd_info* mtd, struct nand_chip *chip)
 	return mecc_pos[total_eccbytes - 1] + 1 + eccbytes == oobsize;
 }
 
+int s5p_nand_block_bad_harder(struct mtd_info *mtd, loff_t ofs, int getchip)
+{
+	struct nand_chip *chip = mtd->priv;
+	int (*nand_block_bad)(struct mtd_info *, loff_t, int) = chip->priv;
+	int bad;
+
+	/* check the other page */
+	chip->bbt_options ^= NAND_BBT_SCANLASTPAGE;
+	bad = nand_block_bad(mtd, ofs, getchip);
+	chip->bbt_options ^= NAND_BBT_SCANLASTPAGE;
+	if (bad)
+		return bad;
+	/* check the designated page */
+	return nand_block_bad(mtd, ofs, getchip);
+}
+
 void s5p_init_mlc_hwecc(struct mtd_info* mtd, struct nand_chip *chip)
 {
 	/* mlc defaults */
@@ -1433,6 +1449,13 @@ void s5p_init_mlc_hwecc(struct mtd_info* mtd, struct nand_chip *chip)
 		chip->ecc.bytes = 28;
 		chip->ecc.strength = 16;
 		chip->badblockbits = 8;
+
+		/* this chip need check first and last page for bad, but the
+		 * default nand_block_bad is only willing to check one of the
+		 * pages, so neeed write a custom one to force it work harder
+		 */
+		chip->priv = chip->block_bad; /* saved for later use */
+		chip->block_bad = s5p_nand_block_bad_harder;
 
 		if (compatible_with_secondary_ecc(mtd, chip)) {
 
