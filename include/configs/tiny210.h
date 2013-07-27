@@ -169,10 +169,32 @@
 #define PHYS_SDRAM_2		(MEMORY_BASE_ADDRESS + 0x20000000) /* SDRAM Bank #2 */
 #define PHYS_SDRAM_2_SIZE	SDRAM_BANK_SIZE
 #endif
+
+/* MMC SPL */
+#define CONFIG_SPL
+
+#define CONFIG_SPL_MMC_BUILD
+#ifndef CONFIG_SPL_MMC_BUILD
+
+#define CONFIG_SPL_NAND_BUILD
+/*#define CONFIG_SPL_NAND_IROM_HELPER*/
+#ifndef CONFIG_SPL_NAND_IROM_HELPER
+/*
+ * use 8k page size when load BL2 from nand,
+ * note: irom boot loader will still use max 4K page when load BL1
+ */
+#define CONFIG_SPL_NAND_8K_PAGE
+#endif /*  CONFIG_SPL_NAND_IROM_HELPER */
+
+#endif /* CONFIG_SPL_MMC_BUILD */
+
 /* FLASH and environment organization */
 #define CONFIG_SYS_NO_FLASH		1
 #undef CONFIG_CMD_IMLS
 #define CONFIG_IDENT_STRING	" for FriendlyLEG-TINY210"
+
+
+#ifdef CONFIG_SPL_MMC_BUILD
 
 #define CONFIG_ENV_IS_IN_MMC		1
 #define CONFIG_SYS_MMC_ENV_DEV		0
@@ -180,6 +202,18 @@
 #define RESERVE_BLOCK_SIZE              (512)
 #define BL1_SIZE                        (8 << 10) /*8 K reserved for BL1*/
 #define CONFIG_ENV_OFFSET               (RESERVE_BLOCK_SIZE + BL1_SIZE + ((16 + 512) * 1024))
+
+#endif
+
+
+#ifdef CONFIG_SPL_NAND_BUILD
+
+#define CONFIG_ENV_IS_IN_NAND		1
+#define CONFIG_ENV_SIZE		0x4000	/* 16KB */
+#define CONFIG_ENV_OFFSET               (2 *1024 * 1024) /* 2MiB */
+
+#endif
+
 #define CONFIG_DOS_PARTITION		1
 
 #if 0
@@ -388,9 +422,6 @@
 #define UART_UBRDIV_VAL		34
 #define UART_UDIVSLOT_VAL	0xDDDD
 #endif
-
-/* MMC SPL */
-#define CONFIG_SPL
 
 /* Modified by lk for dm9000*/
 #define DM9000_16BIT_DATA

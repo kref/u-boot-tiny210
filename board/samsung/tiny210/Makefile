@@ -30,7 +30,15 @@ COBJS	:= tiny210.o
 endif
 
 ifdef CONFIG_SPL_BUILD
+
+ifdef CONFIG_SPL_NAND_BUILD
+COBJS  += nand_boot.o
+endif
+
+ifdef CONFIG_SPL_MMC_BUILD
 COBJS  += mmc_boot.o
+endif
+
 endif
 
 SOBJS	:= lowlevel_init.o mem_setup.o
