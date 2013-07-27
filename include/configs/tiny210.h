@@ -120,7 +120,28 @@
 #define CONFIG_CMD_ELF
 #define CONFIG_CMD_DHCP
 #define CONFIG_CMD_MMC
+#define CONFIG_CMD_NAND
+#define CONFIG_CMD_NAND_YAFFS
+#define CONFIG_CMD_MTDPARTS
+#define CONFIG_CMD_UBI
+#define CONFIG_CMD_UBIFS
 #define CONFIG_CMD_FAT
+
+/* enable nand initialization */
+#define CONFIG_NAND
+/* Enable alternative nand driver */
+#define CONFIG_NAND_S5P
+#define CONFIG_MTD_NAND_S3C_HWECC
+/* for CONFIG_CMD_NAND */
+#define CONFIG_SYS_MAX_NAND_DEVICE 1
+/* for CONFIG_CMD_MTDPARTS */
+#define CONFIG_MTD_DEVICE
+/* for CONFIG_CMD_UBI */
+#define CONFIG_MTD_PARTITIONS
+/* for CONFIG_CMD_UBIFS */
+#define CONFIG_RBTREE
+#define CONFIG_LZO
+
 #define CONFIG_BOOTDELAY		3
 #define CONFIG_ZERO_BOOTDELAY_CHECK
 
