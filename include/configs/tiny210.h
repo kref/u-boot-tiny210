@@ -199,9 +199,7 @@
 #define CONFIG_ENV_IS_IN_MMC		1
 #define CONFIG_SYS_MMC_ENV_DEV		0
 #define CONFIG_ENV_SIZE		0x4000	/* 16KB */
-#define RESERVE_BLOCK_SIZE              (512)
-#define BL1_SIZE                        (8 << 10) /*8 K reserved for BL1*/
-#define CONFIG_ENV_OFFSET               (RESERVE_BLOCK_SIZE + BL1_SIZE + ((16 + 512) * 1024))
+#define CONFIG_ENV_OFFSET               (512 * 1024)
 
 #endif
 

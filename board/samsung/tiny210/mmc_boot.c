@@ -25,7 +25,8 @@
 #define MOVI_BLKSIZE            (1<<9) /* 512 bytes */
 
 /* partition information */
-#define PART_SIZE_BL            (512 * 1024)
+#define PART_SIZE_BL            (1024 * 1024)
+#define PART_OFFSET_BL          (1024 * 1024)
 #define PART_SIZE_KERNEL        (4 * 1024 * 1024)
 #define PART_SIZE_ROOTFS        (26 * 1024 * 1024)
 
@@ -46,7 +47,7 @@
         #if defined(CONFIG_SECURE) || defined(CONFIG_FUSED)
 #define MOVI_BL2_POS            ((eFUSE_SIZE / MOVI_BLKSIZE) + (FWBL1_SIZE / MOVI_BLKSIZE) + MOVI_BL1_BLKCNT + MOVI_ENV_BLKCNT)
         #else
-#define MOVI_BL2_POS            ((eFUSE_SIZE / MOVI_BLKSIZE) + MOVI_BL1_BLKCNT + MOVI_ENV_BLKCNT)
+#define MOVI_BL2_POS            (PART_OFFSET_BL / MOVI_BLKSIZE)
         #endif
 #else
 //#define MOVI_BL2_POS            (MOVI_LAST_BLKPOS - MOVI_BL1_BLKCNT - MOVI_BL2_BLKCNT - MOVI_ENV_BLKCNT)
