@@ -155,7 +155,10 @@
 #define CONFIG_MTD_PARTITIONS
 /* for CONFIG_CMD_UBIFS */
 #define CONFIG_RBTREE
+/* optional, for CONFIG_CMD_BOOTM */
 #define CONFIG_LZO
+#define CONFIG_LZMA
+#define CONFIG_BZIP2
 /* for CONFIG_CMD_ZIP */
 #define CONFIG_GZIP_COMPRESSED
 /* for CONFIG_CMD_MD5SUM */
