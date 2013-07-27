@@ -119,6 +119,7 @@
 #define CONFIG_CMD_PING
 #define CONFIG_CMD_ELF
 #define CONFIG_CMD_DHCP
+#define CONFIG_CMD_PXE
 #define CONFIG_CMD_MMC
 #define CONFIG_CMD_NAND
 #define CONFIG_CMD_NAND_YAFFS
@@ -126,6 +127,20 @@
 #define CONFIG_CMD_UBI
 #define CONFIG_CMD_UBIFS
 #define CONFIG_CMD_FAT
+#define CONFIG_FAT_WRITE
+#define CONFIG_CMD_EXT2
+#define CONFIG_CMD_EXT4
+#define CONFIG_CMD_EXT4_WRITE
+#define CONFIG_CMD_ZIP
+#define CONFIG_CMD_UNZIP
+#define CONFIG_CMD_TIME
+#define CONFIG_CMD_TERMINAL
+#define CONFIG_CMD_SETEXPR
+#define CONFIG_CMD_MD5SUM
+#define CONFIG_CMD_HASH
+#define CONFIG_CMD_INI
+#define CONFIG_CMD_GETTIME
+#define CONFIG_CMD_BOOTMENU
 
 /* enable nand initialization */
 #define CONFIG_NAND
@@ -141,6 +156,21 @@
 /* for CONFIG_CMD_UBIFS */
 #define CONFIG_RBTREE
 #define CONFIG_LZO
+/* for CONFIG_CMD_ZIP */
+#define CONFIG_GZIP_COMPRESSED
+/* for CONFIG_CMD_MD5SUM */
+#define CONFIG_MD5
+#define CONFIG_MD5SUM_VERIFY
+/* enable CONFIG_CMD_HASH's verification feature */
+#define CONFIG_HASH_VERIFY
+/* optional regex support for setexpr and env */
+#define CONFIG_REGEX
+/* for CONFIG_CMD_BOOTMENU */
+#define CONFIG_MENU
+/*
+#define CONFIG_MENU_SHOW
+#define CONFIG_POSTBOOTMENU
+*/
 
 #define CONFIG_BOOTDELAY		3
 #define CONFIG_ZERO_BOOTDELAY_CHECK
