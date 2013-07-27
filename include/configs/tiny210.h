@@ -121,10 +121,6 @@
 #define CONFIG_CMD_DHCP
 #define CONFIG_CMD_MMC
 #define CONFIG_CMD_FAT
-#if 0
-//#undef CONFIG_CMD_NET
-//#undef CONFIG_CMD_NFS
-#endif
 #define CONFIG_BOOTDELAY		3
 #define CONFIG_ZERO_BOOTDELAY_CHECK
 
