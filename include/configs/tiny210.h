@@ -93,7 +93,7 @@
 #define CONFIG_MACH_TYPE		MACH_TYPE_TINY210
 
 /* Size of malloc() pool */
-#define CONFIG_SYS_MALLOC_LEN		(CONFIG_ENV_SIZE + 896*1024)
+#define CONFIG_SYS_MALLOC_LEN		(16 * 1024 * 1024)
 
 /* select serial console configuration */
 #define CONFIG_SERIAL_MULTI		1
